@@ -1,1 +1,3 @@
 developer.playbattlegrounds.com
+
+curl --compressed "https://telemetry-cdn.playbattlegrounds.com/bluehole-pubg/pc-eu/2018/09/22/17/25/886b02d4-be8c-11e8-8770-0a58646bcc0a-telemetry.json" -H "Accept: application/vnd.api+json" > telemetry.json
