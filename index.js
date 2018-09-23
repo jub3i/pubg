@@ -10,40 +10,18 @@ console.log('jubei events:' + filteredJubei.length)
 console.log('bomz events:' + filteredBomz.length)
 
 // write some data
-fs.writeFileSync(fileName + '.pretty.json', prettyJson(telemetry))
-fs.writeFileSync(fileName + '.pretty.jubei.json', prettyJson(filteredJubei))
-fs.writeFileSync(fileName + '.pretty.bomz.json', prettyJson(filteredBomz))
+fs.writeFileSync(fileName + '.generated.pretty.json', prettyJson(telemetry))
+fs.writeFileSync(fileName + '.generated.pretty.jubei.json', prettyJson(filteredJubei))
+fs.writeFileSync(fileName + '.generated.pretty.bomz.json', prettyJson(filteredBomz))
+fs.writeFileSync(fileName + '.generated.filteredEvents.jubei.txt', formatTelemetry(filteredJubei))
+fs.writeFileSync(fileName + '.generated.filteredEvents.bomz.txt', formatTelemetry(filteredBomz))
 
-// log some filtered data
-filteredJubei.forEach(o => {
-  let eventText = o._D + ' ' + o._T
-
-  if (o.common && o.common.isGame) eventText += ' stage:' + o.common.isGame
-
-  if (o._T === 'LogPlayerAttack') {
-    if (o.attacker && o.attacker.name) eventText += ' attacker:' + o.attacker.name
-    if (o.victim && o.victim.name) eventText += ' victim:' + o.victim.name
-  }
-
-  if (o._T === 'LogPlayerTakeDamage') {
-    if (o.attacker && o.attacker.name) eventText += ' attacker:' + o.attacker.name
-    if (o.victim && o.victim.name) eventText += ' victim:' + o.victim.name
-    if (o.damageTypeCategory) eventText += ' damageTypeCategory:' + o.damageTypeCategory
-    if (o.damage) eventText += ' damage:' + o.damage
-  }
-
-  if (o._T === 'LogPlayerKill') {
-    if (o.killer && o.killer.name) eventText += ' killer:' + o.killer.name
-    if (o.victim && o.victim.name) eventText += ' victim:' + o.victim.name
-  }
-
-  console.log(eventText)
-})
-
+// helper
 function prettyJson (o) {
   return JSON.stringify(o, null, 4)
 }
 
+// helper
 function filterTelemetryByName (name, telemetry) {
   const filtered = []
 
@@ -70,6 +48,36 @@ function filterTelemetryByName (name, telemetry) {
   })
 
   return filtered
+}
+
+// helper
+function formatTelemetry (a) {
+  let eventText = ''
+  a.forEach(o => {
+    eventText += o._D + ' ' + o._T
+
+    if (o.common && o.common.isGame) eventText += ' stage:' + o.common.isGame
+
+    if (o._T === 'LogPlayerAttack') {
+      if (o.attacker && o.attacker.name) eventText += ' attacker:' + o.attacker.name
+      if (o.victim && o.victim.name) eventText += ' victim:' + o.victim.name
+    }
+
+    if (o._T === 'LogPlayerTakeDamage') {
+      if (o.attacker && o.attacker.name) eventText += ' attacker:' + o.attacker.name
+      if (o.victim && o.victim.name) eventText += ' victim:' + o.victim.name
+      if (o.damageTypeCategory) eventText += ' damageTypeCategory:' + o.damageTypeCategory
+      if (o.damage) eventText += ' damage:' + o.damage
+    }
+
+    if (o._T === 'LogPlayerKill') {
+      if (o.killer && o.killer.name) eventText += ' killer:' + o.killer.name
+      if (o.victim && o.victim.name) eventText += ' victim:' + o.victim.name
+    }
+
+    eventText += '\n'
+  })
+  return eventText
 }
 
 /* event list
